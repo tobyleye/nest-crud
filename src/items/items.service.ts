@@ -1,44 +1,36 @@
 import { Injectable } from '@nestjs/common';
-
-export interface Item {
-  id?: string | number;
-  name: string;
-  description?: string;
-  qty: number;
-}
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Item } from './items.entity';
+import { CreateItemDto } from './dto/create-item.dto';
 @Injectable()
 export class ItemsService {
-  private items: Array<Item> = [
-    {
-      id: 1,
-      name: 'item one',
-      description: 'item one description',
-      qty: 10,
-    },
-    {
-      id: 2,
-      name: 'item two',
-      description: 'item two description',
-      qty: 10,
-    },
-    {
-      id: 3,
-      name: 'item three',
-      description: 'item three description',
-      qty: 10,
-    },
-  ];
+  constructor(
+    @InjectRepository(Item)
+    private readonly itemsRepository: Repository<Item>,
+  ) {}
 
-  findAll(): Array<Item> {
-    return this.items;
+  findAll() {
+    return this.itemsRepository.find();
   }
 
-//   create(newItem) {
-//     this.items.push(newItem);
-//   }
+  updateOne(id, changes) {
+    return this.itemsRepository.update(id, changes);
+  }
 
-  findOne(id: string | number): Item | null {
-    return this.items.find((item) => item.id == id);
+  findOne(opts) {
+    return this.itemsRepository.findOne(opts);
+  }
+
+  create(createItemDto: CreateItemDto) {
+    const item = new Item();
+    item.name = createItemDto.name;
+    item.qty = createItemDto.qty;
+
+    return this.itemsRepository.save(item);
+  }
+
+  delete(id: string | number) {
+    return this.itemsRepository.delete(id);
   }
 }
