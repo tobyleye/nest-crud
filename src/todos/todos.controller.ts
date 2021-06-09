@@ -20,7 +20,7 @@ export class TodosController {
     return this.todosService.markAsComplete(id);
   }
 
-  @Delete()
+  @Delete(':id')
   async delete(@Param('id') id: number) {
     await this.todosService.delete(id);
     return 'OK';
