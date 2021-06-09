@@ -16,6 +16,10 @@ export class TodosService {
     return this.todosRepository.save(todo);
   }
 
+  delete(id: number) {
+    return this.todosRepository.delete(id);
+  }
+
   findAll() {
     return this.todosRepository.find();
   }
